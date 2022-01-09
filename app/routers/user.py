@@ -8,7 +8,7 @@ router = APIRouter(prefix='/user', tags=['Users'])
 
 
 @router.get('/{id}', response_model=schemas.UserOut)
-def user_get(id: int, db: session = Depends(get_db)):
+def user_get(id: int, db: session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     data = db.query(models.User).filter(models.User.id == id).first()
 
@@ -20,7 +20,7 @@ def user_get(id: int, db: session = Depends(get_db)):
 
 
 @router.post('', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
-def user_create(user: schemas.UserCreate, db: session = Depends(get_db)):
+def user_create(user: schemas.UserCreate, db: session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     does_exist = db.query(models.User).filter(
         models.User.email == user.email).first()
